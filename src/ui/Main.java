@@ -1,8 +1,12 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Scanner;
 
+import customExceptions.GradesRegisteredException;
+import customExceptions.LateEnrollException;
 import customExceptions.QuotaEnrollExceedException;
+import customExceptions.StudentAlreadyEnrolledException;
 import model.Course;
 
 public class Main {
@@ -11,20 +15,20 @@ public class Main {
 	private Scanner reader;
 
 	public static void main(String[] args) {
-		
+
 		Main exe = new Main();
 		exe.menu();
-		
+
 	}
 
-	public Main(){
+	public Main() {
 
 		reader = new Scanner(System.in);
 		init();
 
 	}
 
-	public void init(){
+	public void init() {
 
 		System.out.println("Welcome to course management");
 
@@ -44,7 +48,7 @@ public class Main {
 
 	}
 
-	public void menu(){
+	public void menu() {
 
 		int option;
 		do {
@@ -52,7 +56,7 @@ public class Main {
 			System.out.println("1. Enroll a student");
 			System.out.println("2. Unenroll a student");
 			System.out.println("3. Set grade to a student");
-			System.out.println("4. Advace a week");
+			System.out.println("4. Advance a week");
 			System.out.println("5. Exit the program");
 			System.out.print("Please choose an option: ");
 
@@ -69,6 +73,10 @@ public class Main {
 					} catch (QuotaEnrollExceedException e) {
 						System.out.println("It was not possible to enroll the student with id " + id);
 						System.out.println(e.getMessage());
+					} catch (StudentAlreadyEnrolledException e) {
+						System.out.println(e.getMessage());
+					} catch (LateEnrollException e) {
+						System.out.println(e.getMessage());
 					}
 					break;
 				case 2:
@@ -77,8 +85,13 @@ public class Main {
 
 					System.out.println("Please enter the student id to unenroll: ");
 					id = reader.nextLine();
-					myCourse.cancelEnrollment(id); // Does this method throw an exception? Why is it compiling with no problems?
-					System.out.println("Student has been unenrolled");
+					try {
+						myCourse.cancelEnrollment(id);
+						System.out.println("Student has been unenrolled");
+					} catch (GradesRegisteredException e) {
+						System.out.println(e.getMessage());
+					} // Does this method throw an exception? Why is it compiling with no problems?
+
 					break;
 				case 3:
 					System.out.println("These are the current students enrolled:");
@@ -90,7 +103,8 @@ public class Main {
 					double g = Double.parseDouble(reader.nextLine());
 					System.out.print("Please enter the grade number in the semester: ");
 					int gradeNumber = Integer.parseInt(reader.nextLine());
-					myCourse.setStudentGrade(id, gradeNumber, g); // Does this method throw an exception? Why is it compiling with no problems?
+					myCourse.setStudentGrade(id, gradeNumber, g); // Does this method throw an exception? Why is it
+																	// compiling with no problems?
 					System.out.println("Student has been graded");
 					break;
 				case 4:
@@ -106,5 +120,5 @@ public class Main {
 
 		reader.close();
 	}
-	
+
 }

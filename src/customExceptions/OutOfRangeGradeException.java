@@ -19,7 +19,7 @@ public class OutOfRangeGradeException extends IllegalArgumentException{
 	}
 	
 	private void calculateTypeOfOut(double mx, double mn) {
-		if(grade<mn) {
+		if(grade<=mn) {
 			typeOfOut = UNDER_EXCEED;
 		}else if(grade>mx){
 			typeOfOut = OVER_EXCEED;

@@ -1,7 +1,14 @@
 package model;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import customExceptions.GradesRegisteredException;
+import customExceptions.LateEnrollException;
 import customExceptions.OutOfRangeGradeException;
 import customExceptions.QuotaEnrollExceedException;
+import customExceptions.StudentAlreadyEnrolledException;
 
 public class Course {
 	private double maxGrade;
@@ -22,8 +29,18 @@ public class Course {
 		studentsEnrolled = new Student[mq];
 	}
 
-	public void enroll(String id) throws QuotaEnrollExceedException {
+	public void enroll(String id)
+			throws QuotaEnrollExceedException, StudentAlreadyEnrolledException, LateEnrollException {
 		int posNewStudent = searchFirstAvailable();
+
+		if (searchStudent(id) != -1) {
+
+			throw new StudentAlreadyEnrolledException();
+		}
+
+		if (currentWeek > 2) {
+			throw new LateEnrollException();
+		}
 
 		if (posNewStudent == -1) {
 			throw new QuotaEnrollExceedException(maxQuota);
@@ -32,8 +49,13 @@ public class Course {
 		}
 	}
 
-	public void cancelEnrollment(String id) {
+	public void cancelEnrollment(String id) throws GradesRegisteredException {
 		int posStudent = searchStudent(id);
+
+		if (studentsEnrolled[posStudent].hasHalfGradesRegistered()) {
+			throw new GradesRegisteredException();
+
+		}
 		studentsEnrolled[posStudent] = null;
 	}
 
@@ -86,7 +108,7 @@ public class Course {
 
 			if (studentsEnrolled[i] != null) {
 
-				msg += studentsEnrolled[i].getId()+"\n";
+				msg += studentsEnrolled[i].getId() + "\n";
 
 			}
 

@@ -8,6 +8,24 @@ public class Student {
 		id = identifier;
 		grades = new double[totalGrades];
 	}
+
+	public boolean hasHalfGradesRegistered(){
+
+		double half = grades.length/2;
+		double count = 0;
+
+		for (double g : grades) {
+			if(g>0){
+				count++;
+			}
+		}
+
+		if(count>=half){
+			return true;
+		}
+
+		return false;
+	}
 	
 	public void setGrade(int gradeNumber, double grade) throws ArrayIndexOutOfBoundsException{		
 		grades[gradeNumber-1] = grade;
